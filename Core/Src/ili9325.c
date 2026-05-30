@@ -187,7 +187,7 @@ void ili9325_Init(void)
   
   /* Start Initial Sequence --------------------------------------------------*/
   ili9325_WriteReg(LCD_REG_0, 0x0001); /* Start internal OSC. */
-  ili9325_WriteReg(LCD_REG_1, 0x0100); /* Set SS and SM bit */
+  ili9325_WriteReg(LCD_REG_1, 0x0000); /* SS=0 (source scan S1->S720, horizontal flip for 180 rotation) */
   ili9325_WriteReg(LCD_REG_2, 0x0700); /* Set 1 line inversion */
   ili9325_WriteReg(LCD_REG_3, 0x1018); /* Set GRAM write direction and BGR=1. */
   ili9325_WriteReg(LCD_REG_4, 0x0000); /* Resize register */
@@ -233,7 +233,7 @@ void ili9325_Init(void)
   ili9325_WriteReg(LCD_REG_82, 0x0000); /* Vertical GRAM Start Address */
   ili9325_WriteReg(LCD_REG_83, 0x013F); /* Vertical GRAM End Address */
   
-  ili9325_WriteReg(LCD_REG_96,  0xA700); /* Gate Scan Line(GS=1, scan direction is G320~G1) */
+  ili9325_WriteReg(LCD_REG_96,  0x2700); /* Gate Scan Line(GS=0, scan direction is G1~G320, vertical flip for 180 rotation) */
   ili9325_WriteReg(LCD_REG_97,  0x0001); /* NDL,VLE, REV */
   ili9325_WriteReg(LCD_REG_106, 0x0000); /* set scrolling line */
   
