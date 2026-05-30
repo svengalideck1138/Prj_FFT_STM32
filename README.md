@@ -98,6 +98,20 @@ ADC(DMA) ──> Input[](512, 실/허수 인터리브) ──> [FFT] ──> 복
                                                        Output[](256) ──> LCD FFT 뷰 / UART 전송
 ```
 
+### Excel 방법과 본 펌웨어 구현의 대응 관계
+
+Excel로 익힌 개념이 CMSIS-DSP 구현에 그대로 매핑됩니다.
+
+| Excel 방법 (PDF) | 본 펌웨어 구현 |
+|------------------|----------------|
+| Fourier Analysis → `FFT complex` 열 (복소수 결과) | `arm_cfft_radix4_f32()` 출력 (복소 스펙트럼) |
+| `=2/sa * IMABS(E2)` → `FFTmag` 열 (크기) | `arm_cmplx_mag_f32()` → `Output[]` |
+| `FFT freq = n × fs / sa` (주파수 분해능) | 빈 간격 = 샘플링 주파수 / `FFT_SIZE` |
+| 샘플 수는 2ⁿ(256/512/1024 …)이어야 함 | `FFT_SIZE = 256` (radix-4는 4의 거듭제곱) |
+| "sa/2 이상은 그리지 말 것(스펙트럼이 반복됨)" | `main.c`에서 `FFT_SIZE/2`까지만 LCD에 표시 |
+
+> 즉, Excel은 **알고리즘 검증·시각화 도구**로, STM32 펌웨어는 이를 **실시간으로 구현한 결과**로 볼 수 있습니다.
+
 ## 빌드 & 플래시
 
 본 프로젝트는 **STM32CubeIDE** 프로젝트입니다.
@@ -135,17 +149,15 @@ Prj_FFT_STM32/
 │   ├── Src/            # 소스 (main.c, FFT/LCD/ADC 로직, 드라이버)
 │   └── Startup/        # 스타트업 어셈블리
 ├── Drivers/            # STM32 HAL & CMSIS
+├── docs/
+│   ├── hardware_demo.jpg       # 동작 사진
+│   └── references/             # FFT 참고 자료 (PDF, Excel 예제)
 ├── FFT_Mutex.ioc       # STM32CubeMX 설정 파일
 ├── *.ld                # 링커 스크립트 (FLASH / RAM)
 └── README.md
 ```
 
-## 라이선스
-
-- STM32 HAL 드라이버 및 CMSIS 코드: STMicroelectronics 라이선스 (각 파일 헤더 참조)
-- 사용자 작성 코드: 저장소 라이선스 정책을 따릅니다.
-
-## 향후 개선 계획 (Roadmap)
+## 향후 개선 계획
 
 현재 펌웨어는 **단일 코어(Single Core) / 단일 `while` 루프** 구조로 동작합니다.
 
@@ -158,4 +170,11 @@ Prj_FFT_STM32/
 - **MUTEX(상호 배제) 적용** — 두 태스크가 공유하는 FFT 결과 버퍼(`Input`/`Output`)를 뮤텍스로 보호하여 데이터 경합(race condition)을 방지한다.
 - (옵션) UART 전송을 인터럽트/DMA 기반(`HAL_UART_Transmit_DMA`)으로 전환하여 블로킹 대기 자체를 제거한다.
 
-> 프로젝트명이 `FFT_Mutex`인 것도 이 개선(태스크 분리 + 뮤텍스 보호)을 염두에 둔 것입니다.
+## 참고 자료 (References)
+
+FFT를 펌웨어로 구현하기에 앞서, **Excel로 시간 영역 → 주파수 영역 변환 과정을 먼저 검증**하며 원리를 이해했습니다. 아래 자료를 참고했습니다.
+
+- **[Frequency Domain Using Excel](docs/references/Excel_FFT_Instructions.pdf)** — Larry Klingenberg, San Francisco State University, School of Engineering (April 2005)
+  - Excel의 *Analysis ToolPak → Fourier Analysis* 기능으로 샘플 데이터를 FFT 복소수로 변환하고, 크기 스펙트럼을 그리는 단계별 가이드
+- **[FFT 예제 스프레드시트](docs/references/FFT_example.xlsx)** — 위 방법을 그대로 적용해 직접 작성한 검증용 예제 (시트 `scope_0`)
+  - 컬럼 구성: `second`(시간) · `Volt`(샘플 데이터) · `FFT Freq` · `FFT complex` · `FFTmag`, 파라미터: `Data length(D)`, `sampling time(t)`, `sampling Freq(Fs)`
