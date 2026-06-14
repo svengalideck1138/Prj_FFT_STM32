@@ -46,11 +46,8 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-/* Set to 1 to enable UART monitor frames to the C# FFT_Monitor_STM32 PC app.
- * Set to 0 for LCD-only (fast) operation — recommended while studying RTOS.
- * UART monitor sends per FFT cycle: raw frame (256 B, ~22 ms @ 115200) +
- * FFT frame (1024 B, ~89 ms @ 115200), which competes with the 64 ms FFT period. */
-#define ENABLE_UART_MONITOR  1
+/* UART 모니터 전송은 이제 app_tasks.c 의 UartTask 가 항상 수행한다.
+ * (구버전의 ENABLE_UART_MONITOR 컴파일 스위치는 제거됨) */
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/

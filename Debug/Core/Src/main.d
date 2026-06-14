@@ -33,40 +33,27 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h \
+ ../Core/Inc/FreeRTOSConfig.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h \
  ../Core/Inc/adc.h ../Core/Inc/main.h ../Core/Inc/dma.h ../Core/Inc/spi.h \
  ../Core/Inc/tim.h ../Core/Inc/usart.h ../Core/Inc/gpio.h \
  ../Core/Inc/fsmc.h ../Core/Inc/openx07v_c_lcd.h ../Core/Inc/ili9325.h \
- ../Core/Inc/lcd.h ../Core/Inc/fonts.h ../Core/Inc/touch_panel.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/arm_math.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/arm_math_types.h \
- ../Drivers/CMSIS/Include/cmsis_compiler.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/arm_math_memory.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/none.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/arm_math_types.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/utils.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/basic_math_functions.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/arm_math_memory.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/none.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/utils.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/interpolation_functions.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/bayes_functions.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/statistics_functions.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/basic_math_functions.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/fast_math_functions.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/matrix_functions.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/complex_math_functions.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/statistics_functions.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/controller_functions.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/support_functions.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/distance_functions.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/svm_functions.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/svm_defines.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/fast_math_functions.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/transform_functions.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/complex_math_functions.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/filtering_functions.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/support_functions.h \
- C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/quaternion_math_functions.h
+ ../Core/Inc/lcd.h ../Core/Inc/fonts.h ../Core/Inc/touch_panel.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -102,6 +89,23 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
+../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h:
+../Core/Inc/FreeRTOSConfig.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h:
+../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/task.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/list.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/task.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h:
 ../Core/Inc/adc.h:
 ../Core/Inc/main.h:
 ../Core/Inc/dma.h:
@@ -115,33 +119,3 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/lcd.h:
 ../Core/Inc/fonts.h:
 ../Core/Inc/touch_panel.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/arm_math.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/arm_math_types.h:
-../Drivers/CMSIS/Include/cmsis_compiler.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/arm_math_memory.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/none.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/arm_math_types.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/utils.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/basic_math_functions.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/arm_math_memory.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/none.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/utils.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/interpolation_functions.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/bayes_functions.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/statistics_functions.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/basic_math_functions.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/fast_math_functions.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/matrix_functions.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/complex_math_functions.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/statistics_functions.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/controller_functions.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/support_functions.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/distance_functions.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/svm_functions.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/svm_defines.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/fast_math_functions.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/transform_functions.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/complex_math_functions.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/filtering_functions.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/support_functions.h:
-C:/Users/Zhenyu/MySource/Git/Prj_FFT_STM32/Drivers/CMSIS/DSP/Include/dsp/quaternion_math_functions.h:

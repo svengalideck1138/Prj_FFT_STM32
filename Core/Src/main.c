@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "cmsis_os.h"
 #include "adc.h"
 #include "dma.h"
 #include "spi.h"
@@ -30,9 +31,8 @@
 /* USER CODE BEGIN Includes */
 #include "openx07v_c_lcd.h"
 #include "touch_panel.h"
-#include "arm_math.h"
-#include <string.h>
-#include <stdio.h>
+/* 신호처리(ADC/FFT/UART)는 app_tasks.c 의 FreeRTOS 태스크에서 수행한다.
+ * 태스크 생성은 freertos.c 의 MX_FREERTOS_Init() 에서 호출된다. */
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -42,13 +42,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-/* FFT settings */
-#define SAMPLES					512			/* 256 real party and 256 imaginary parts */
-#define FFT_SIZE				SAMPLES / 2		/* FFT size is always the same size as we have samples, so 256 in our case */
-
-/* Global variables */
-float32_t Input[SAMPLES];
-float32_t Output[FFT_SIZE];
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -59,18 +52,12 @@ float32_t Output[FFT_SIZE];
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-extern uint8_t tim7_125us_flag;
-
-uint8_t AdcVal = 0;
-uint8_t Adc_Array[320];
-
-#if ENABLE_UART_MONITOR
-uint8_t Tx_Message[1029];
-#endif
+uint8_t AdcVal = 0;     /* ADC1 DMA 가 갱신하는 최신 샘플 (app_tasks.c 에서 사용) */
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -78,10 +65,6 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 void LCD_TFT_Init_Calib(void);
-#if ENABLE_UART_MONITOR
-void Encode_Message_Raw(float32_t* RawData_array, uint16_t Raw_Message_Length);
-void Encode_Message_FFT_f32(float32_t* FFT_OutArray, uint16_t FFT_Message_Length);
-#endif
 /* USER CODE END 0 */
 
 /**
@@ -92,12 +75,6 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	uint16_t IndexCounter = 0;
-	uint8_t ModeState = 0;
-	uint16_t TimeDomainIndex = 0;
-
-	arm_cfft_radix4_instance_f32 S;	/* ARM CFFT module */
-	uint16_t i;
 
   /* USER CODE END 1 */
 
@@ -107,10 +84,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-	for(uint16_t j = 0; j < 320; j++)
-	{
-		Adc_Array[j] = 0;
-	}
+
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -125,17 +99,29 @@ int main(void)
   MX_DMA_Init();
   MX_ADC1_Init();
   MX_FSMC_Init();
-  MX_TIM7_Init();
   MX_USART3_UART_Init();
   MX_SPI2_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 	HAL_UART_Transmit(&huart3, (uint8_t*)"USART3 OK\r\n", 11, 100);
 
 	BSP_LCD_Init();
 	LCD_TFT_Init_Calib();
+	/* ADC 를 DMA 모드로 시작(외부 트리거 대기) 후, TIM3 을 시작하면
+	 * TIM3 의 TRGO(Update) 가 ADC 변환을 균일하게 트리거한다.
+	 * (STM32F4 는 ADC regular 트리거로 TIM7 을 지원하지 않아 TIM3 사용)
+	 * TIM3 인터럽트는 불필요하므로 _IT 가 아닌 일반 Start 사용. */
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&AdcVal, 1);
-	HAL_TIM_Base_Start_IT(&htim7);
+	HAL_TIM_Base_Start(&htim3);
   /* USER CODE END 2 */
+
+  /* Call init function for freertos objects (in cmsis_os2.c) */
+  MX_FREERTOS_Init();
+
+  /* Start scheduler */
+  osKernelStart();
+
+  /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -144,59 +130,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		if(ModeState == 0)
-		{
-			if(tim7_125us_flag == 1)
-			{
-				tim7_125us_flag = 0;
-				memmove(Input+2, Input, sizeof(Input) - 2*sizeof(float32_t));
-				Input[0] = (AdcVal/4);
-				Input[1] = 0;
-
-				BSP_LCD_SetTextColor(LCD_COLOR_YELLOW);
-				BSP_LCD_FillCircle(TimeDomainIndex, Input[0]+40, 1);
-
-				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
-				BSP_LCD_DrawVLine(TimeDomainIndex+1, 35, 70);
-
-				TimeDomainIndex ++;
-				IndexCounter += 2;
-
-				if(TimeDomainIndex == 320)
-				{
-					TimeDomainIndex = 0;
-				}
-
-				if(IndexCounter == SAMPLES)
-				{
-					IndexCounter = 0;
-					BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
-					for(i = 2; i < (FFT_SIZE/2); i++)
-					{
-						BSP_LCD_DrawLine(i, 240, i, 240-(Output[i]/25));
-					}
-
-
-					arm_cfft_radix4_init_f32(&S, FFT_SIZE, 0, 1);
-					arm_cfft_radix4_f32(&S, Input);
-					arm_cmplx_mag_f32(Input, Output, FFT_SIZE);
-
-#if ENABLE_UART_MONITOR
-					Encode_Message_Raw(Input, SAMPLES);
-					HAL_UART_Transmit(&huart3, &Tx_Message[0], (SAMPLES/2) + 5, HAL_MAX_DELAY);
-
-					Encode_Message_FFT_f32(Output, FFT_SIZE);
-					HAL_UART_Transmit(&huart3, &Tx_Message[0], (FFT_SIZE * 4) + 5, HAL_MAX_DELAY);
-#endif
-
-					BSP_LCD_SetTextColor(LCD_COLOR_YELLOW);
-					for(i = 2; i < (FFT_SIZE/2); i++)
-					{
-						BSP_LCD_DrawLine(i, 240, i, 240-(Output[i]/25));
-					}
-				}
-			}
-		}
   }
   /* USER CODE END 3 */
 }
@@ -265,59 +198,6 @@ void LCD_TFT_Init_Calib(void)
 	BSP_LCD_DisplayStringAt(3,3, (uint8_t*)"Time Domain View",LEFT_MODE);
 	BSP_LCD_DisplayStringAt(0,3, (uint8_t*)"FFT View",RIGHT_MODE);
 }
-
-#if ENABLE_UART_MONITOR
-/**
- * @brief Build a "raw" frame in Tx_Message for the C# monitor.
- *        Reads even-indexed elements of RawData_array (which holds
- *        AdcVal/4 at [0], 0 at [1], AdcVal_prev/4 at [2], ... — the
- *        CFFT real/imag interleave). Sends those as 1-byte samples.
- *        Output: 5-byte header + (Raw_Message_Length/2) data bytes.
- */
-void Encode_Message_Raw(float32_t* RawData_array, uint16_t Raw_Message_Length)
-{
-	uint16_t i;
-	uint16_t Counter = 0;
-
-	Tx_Message[0] = 0x03;
-	Tx_Message[1] = 0x15;
-	Tx_Message[2] = 0x01;
-	Tx_Message[3] = ((Raw_Message_Length / 2) >> 8) & 0xFF;
-	Tx_Message[4] = (Raw_Message_Length / 2) & 0xFF;
-
-	for (i = 0; i < Raw_Message_Length; i++)
-	{
-		if ((i % 2) == 0)
-		{
-			Tx_Message[Counter + 5] = (uint8_t)RawData_array[i];
-			Counter++;
-		}
-	}
-}
-
-void Encode_Message_FFT_f32(float32_t* FFT_OutArray, uint16_t FFT_Message_Length)
-{
-	uint16_t i;
-	uint16_t Counter = 0;
-	unsigned char ch[4];
-
-	Tx_Message[0] = 0x03;
-	Tx_Message[1] = 0x15;
-	Tx_Message[2] = 0x02;
-	Tx_Message[3] = ((FFT_Message_Length * 4) >> 8) & 0xFF;
-	Tx_Message[4] = (FFT_Message_Length * 4) & 0xFF;
-
-	for (i = 0; i < FFT_Message_Length; i++)
-	{
-		memcpy(ch, &FFT_OutArray[i], sizeof(float));
-		for (int j = 0; j < 4; j++)
-		{
-			Tx_Message[Counter + 5] = ch[j];
-			Counter++;
-		}
-	}
-}
-#endif
 /* USER CODE END 4 */
 
 /**
