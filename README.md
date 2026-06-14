@@ -118,8 +118,6 @@ adcBuf[] = [ re0, im0, re1, im1, ... , re255, im255 ]
 1. **DC 오프셋 제거** — FFT 전 블록 평균을 빼서 저주파 과대 성분 억제
 2. **로그(dB) 스케일** — `20·log10(mag)`를 `[FFT_DB_MIN, FFT_DB_MAX]` 구간으로 화면에 매핑(클램프)
 
-> Hann 윈도우·IIR 평활은 초기에 적용했다가, TIM3 하드웨어 트리거로 샘플링이 균일해지면서 노이즈가 충분히 낮아져 **현재는 사용하지 않습니다.** 필요 시 `FftTask`에 다시 추가할 수 있습니다.
-
 ## 성능 개선 내역 (단일 루프 → FreeRTOS)
 
 초기에는 단일 `while` 루프 구조였으나, 아래 단계를 거쳐 반응성과 신호 품질을 크게 개선했습니다.
@@ -189,16 +187,6 @@ adcBuf[] = [ re0, im0, re1, im1, ... , re255, im255 ]
 - **NVIC**: DMA2_Stream0 / USART3 인터럽트 우선순위 ≥ 5 (FreeRTOS `configMAX_SYSCALL_INTERRUPT_PRIORITY`)
 - **FreeRTOS**: `USE_COUNTING_SEMAPHORES`, `USE_MUTEXES` 활성화
 
-## 주요 튜닝 파라미터
-
-[`Core/Src/app_tasks.c`](Core/Src/app_tasks.c) 상단 `#define`:
-
-| 파라미터 | 기본값 | 설명 |
-|---|---|---|
-| `FFT_DB_MIN` | 45.0 | 이 dB 이하 = 막대 없음(바닥). 노이즈 플로어가 보이면 ↑ |
-| `FFT_DB_MAX` | 90.0 | 이 dB 이상 = 최대 높이로 클램프 |
-| `FFT_MAX_HEIGHT` | 200 | 막대 최대 높이(px) |
-
 ## UART 프로토콜
 
 `UartTask`가 매 FFT 사이클마다 UART3로 두 프레임을 전송합니다 (인코딩: `Build_RawFrame` / `Build_FftFrame`).
@@ -238,13 +226,3 @@ FFT를 펌웨어로 구현하기에 앞서, **Excel로 시간 영역 → 주파�
 - **[Frequency Domain Using Excel](docs/references/Excel_FFT_Instructions.pdf)** — Larry Klingenberg, San Francisco State University (April 2005). Excel *Analysis ToolPak → Fourier Analysis* 로 FFT 복소수·크기 스펙트럼을 그리는 단계별 가이드.
 - **[FFT 예제 스프레드시트](docs/references/FFT_example.xlsx)** — Signal Generator로 주파수를 생성해 Oscilloscope에 연결, 그 데이터를 엑셀로 추출하여 위 가이드대로 작업했습니다. 이를 통해 FFT 구현에 중요한 척도·파라미터(샘플 수, 샘플링 주파수, 분해능 등)를 학습했습니다.
   - 컬럼: `second`(시간) · `Volt`(샘플) · `FFT Freq` · `FFT complex` · `FFTmag` / 파라미터: `Data length(D)`, `sampling time(t)`, `sampling Freq(Fs)`
-
-### Excel 방법 ↔ 펌웨어 구현 대응
-
-| Excel 방법 | 본 펌웨어 |
-|------------------|----------------|
-| Fourier Analysis → `FFT complex` | `arm_cfft_radix4_f32()` 출력 |
-| `=2/sa * IMABS(E2)` → `FFTmag` | `arm_cmplx_mag_f32()` |
-| `FFT freq = n × fs / sa` | 빈 간격 = fs / `FFT_POINTS` |
-| 샘플 수 2ⁿ | `FFT_POINTS = 256` (radix-4) |
-| sa/2 이상은 표시 안 함 | `FFT_POINTS/2`까지만 LCD 표시 |
