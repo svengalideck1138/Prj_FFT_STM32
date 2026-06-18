@@ -86,8 +86,6 @@ arm_cfft_radix4_f32(&S, in);                     // 2) 복소 FFT 수행 (in-pla
 arm_cmplx_mag_f32(in, mag, FFT_POINTS);          // 3) 각 주파수 빈의 크기(magnitude)
 ```
 
-### 입력 데이터 구조: 왜 버퍼가 512인가?
-
 FFT는 **복소수**를 다루므로 한 샘플마다 `[실수부, 허수부]` 두 개의 `float32`가 필요합니다. 256포인트 FFT를 위해 512 크기 버퍼에 인터리브 저장합니다.
 
 ```
