@@ -1,12 +1,12 @@
-# Prj_FFT_STM32 — 실시간 FFT 스펙트럼 분석기 (FreeRTOS)
+# Prj_FFT_STM32 — 실시간 FFT (FreeRTOS)
 
 ![하드웨어 동작 사진](docs/hardware_demo.jpg)
 
 > WaveShare STM32F407 Core 보드 + 3.2" TFT LCD(FSMC) + ST-Link/JTAG, UART3, 마이크 모듈 구성. 상단에 시간 도메인 파형, 하단에 FFT 스펙트럼이 표시됩니다.
 
-### 실시간 동작 영상
+### 동작 영상
 
-![실시간 FFT 동작](docs/hardware_demo.gif)
+![실시간 FFT 동작](docs/DemoVideo.gif)
 
 > 마이크 입력에 따라 상단 시간 도메인 파형과 하단 FFT 스펙트럼이 실시간으로 갱신되는 모습.
 
